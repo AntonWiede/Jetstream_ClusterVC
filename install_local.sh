@@ -53,6 +53,9 @@ dnf -y install https://repos.openhpc.community/OpenHPC/3/EL_9/x86_64/ohpc-releas
 # Enable CRB (replaces powertools on EL8)
 dnf config-manager --set-enabled crb
 
+# Enable EPEL (required for munge/apptainer on EL9)
+dnf -y install epel-release
+
 if [[ ${docker_allow} == 0 ]]; then
   dnf config-manager --set-disabled docker-ce-stable
 
@@ -66,12 +69,12 @@ dnf -y --allowerasing install \
         munge \
         munge-libs \
         vim \
-        mailx \
+        s-nail \
         lmod-ohpc \
         bash-completion \
         gnu12-compilers-ohpc \
         openmpi4-gnu12-ohpc \
-        apptainer-ohpc \
+        apptainer \
         lmod-defaults-gnu12-openmpi4-ohpc \
         moreutils \
         bind-utils \
