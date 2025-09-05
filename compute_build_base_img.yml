@@ -88,10 +88,9 @@
 
   - name: Get the slurmctld uid
     local_action:
-      module: shell getent passwd slurm | awk -F':' '{print $3}'
+      module: shell id -u slurm 2>/dev/null || echo "64030"
     register: headnode_slurm_uid
     become: False # for running as slurm, since no sudo on localhost
-    ignore_errors: yes
 
   - debug:
       var: headnode_slurm_uid
@@ -138,7 +137,7 @@
   - name: fix slurm user uid
     user:
       name: slurm
-      uid: "{{ headnode_slurm_uid.stdout | int | default(64030) }}"
+      uid: "{{ headnode_slurm_uid.stdout | int }}"
       shell: "/sbin/nologin"
       home: "/etc/slurm"
 
