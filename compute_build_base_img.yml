@@ -42,11 +42,26 @@
   - debug:
       var: os_host
 
+  - name: set compute instance name
+    set_fact:
+      compute_instance_name: "compute-{{ ansible_facts.hostname }}-base-instance"
+
+  - name: get compute instance info
+    openstack.cloud.server_info:
+      cloud: "{{ openstack_cloud }}"
+      filters:
+        name: "{{ compute_instance_name }}"
+    register: os_server_info
+
+  - name: derive private ip for compute instance
+    set_fact:
+      compute_private_ip: "{{ (os_server_info.servers[0].addresses[network_name] | default([]) | selectattr('version','eq',4) | map(attribute='addr') | list | first) | default(os_server_info.servers[0].private_v4 | default(os_server_info.servers[0].interface_ip)) }}"
+
   - name: add compute instance to inventory
     add_host:
-      name: "{{ os_host['openstack']['name'] }}"
+      name: "{{ compute_instance_name }}"
       groups: "compute-base"
-      ansible_host: "{{ os_host.openstack.private_v4 }}"
+      ansible_host: "{{ compute_private_ip }}"
 
   - name: pause for ssh to come up
     pause:
