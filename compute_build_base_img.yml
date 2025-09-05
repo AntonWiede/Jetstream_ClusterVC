@@ -3,7 +3,7 @@
 - hosts: localhost
 
   vars:
-    compute_base_image: "Featured-RockyLinux8"
+    compute_base_image: "Featured-RockyLinux9"
     sec_group_global: "{{ ansible_facts.hostname }}-ssh-global"
     sec_group_internal: "{{ ansible_facts.hostname }}-internal"
     compute_base_size: "m3.tiny"
@@ -93,16 +93,16 @@
       state: stopped
       enabled: no
 
-  - name: Add OpenHPC 2.0 repo
+  - name: Add OpenHPC 3.0 repo
     dnf:
-      name: "http://repos.openhpc.community/OpenHPC/2/CentOS_8/x86_64/ohpc-release-2-1.el8.x86_64.rpm"
+      name: "http://repos.openhpc.community/OpenHPC/3/EL_9/x86_64/ohpc-release-3-1.el9.x86_64.rpm"
       state: present
       lock_timeout: 900
       disable_gpg_check: yes
 
 
-  - name: Enable CentOS PowerTools repo
-    command: dnf config-manager --set-enabled powertools
+  - name: Enable Rocky CRB repo
+    command: dnf config-manager --set-enabled crb
 
   - name: Disable docker-ce repo
     command: dnf config-manager --set-disabled docker-ce-stable
