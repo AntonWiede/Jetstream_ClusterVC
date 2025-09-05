@@ -50,7 +50,14 @@
 
   - name: pause for ssh to come up
     pause:
-      seconds: 90
+      seconds: 120
+
+  - name: wait for ssh to be ready
+    wait_for:
+      host: "{{ os_host.server.addresses[network_name][0].addr }}"
+      port: 22
+      timeout: 600
+      delay: 30
 
 
 - hosts: compute-base
