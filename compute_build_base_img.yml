@@ -149,22 +149,22 @@
       state: present
       lock_timeout: 300
 
-  - name: get compute node slurm uid
-    shell: "getent passwd slurm | awk -F: '{print $3}'"
-    register: compute_slurm_uid
-    changed_when: false
+  #- name: get compute node slurm uid
+  #  shell: "getent passwd slurm | awk -F: '{print $3}'"
+  #  register: compute_slurm_uid
+  #  changed_when: false
 
-  - name: fix slurm user uid
-    user:
-      name: slurm
-      uid: "{{ headnode_slurm_uid.stdout | trim | int }}"
-      shell: "/sbin/nologin"
-      home: "/etc/slurm"
-    when:
-      - headnode_slurm_uid is defined
-      - (headnode_slurm_uid.stdout | default('') | trim | regex_search('^\\d+$'))
-      - (headnode_slurm_uid.stdout | trim | int) != 0
-      - (compute_slurm_uid.stdout | default('') | trim | int) != (headnode_slurm_uid.stdout | trim | int)
+  #- name: fix slurm user uid
+  #  user:
+  #    name: slurm
+  #    uid: "{{ headnode_slurm_uid.stdout | trim | int }}"
+  #    shell: "/sbin/nologin"
+  #    home: "/etc/slurm"
+  #  when:
+  #    - headnode_slurm_uid is defined
+  #    - (headnode_slurm_uid.stdout | default('') | trim | regex_search('^\\d+$'))
+  #    - (headnode_slurm_uid.stdout | trim | int) != 0
+  #    - (compute_slurm_uid.stdout | default('') | trim | int) != (headnode_slurm_uid.stdout | trim | int)
 
   - name: create slurm spool directories
     file:
