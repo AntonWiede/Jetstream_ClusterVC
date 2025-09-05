@@ -60,7 +60,7 @@
   - name: add compute instance to inventory
     add_host:
       name: "{{ compute_instance_name }}"
-      groups: "compute-base"
+      groups: "compute_base"
       ansible_host: "{{ compute_private_ip }}"
 
   - name: pause for ssh to come up
@@ -68,7 +68,7 @@
       seconds: 90
 
 
-- hosts: compute-base
+- hosts: compute_base
 
   vars:
     compute_base_package_list:
