@@ -47,9 +47,11 @@ firewall-offline-cmd --add-rich-rule="rule source address="${SUBNET}" family='ip
 systemctl enable firewalld
 systemctl restart firewalld
 
-dnf -y install http://repos.openhpc.community/OpenHPC/2/CentOS_8/x86_64/ohpc-release-2-1.el8.x86_64.rpm
+# OpenHPC for Rocky Linux 9 (EL9)
+dnf -y install https://repos.openhpc.community/OpenHPC/3/EL_9/x86_64/ohpc-release-3-1.el9.x86_64.rpm
 
-dnf config-manager --set-enabled powertools
+# Enable CRB (replaces powertools on EL8)
+dnf config-manager --set-enabled crb
 
 if [[ ${docker_allow} == 0 ]]; then
   dnf config-manager --set-disabled docker-ce-stable
@@ -57,19 +59,26 @@ if [[ ${docker_allow} == 0 ]]; then
   dnf -y remove containerd.io.x86_64 docker-ce.x86_64 docker-ce-cli.x86_64 docker-ce-rootless-extras.x86_64
 fi
 
+# EL9/OpenHPC 3 package set
 dnf -y --allowerasing install \
-        ohpc-slurm-server \
+        slurm-ohpc \
+        slurm-slurmctld-ohpc \
+        munge \
+        munge-libs \
         vim \
         mailx \
         lmod-ohpc \
         bash-completion \
-        gnu9-compilers-ohpc \
-        openmpi4-gnu9-ohpc \
-        singularity-ohpc \
-        lmod-defaults-gnu9-openmpi4-ohpc \
+        gnu12-compilers-ohpc \
+        openmpi4-gnu12-ohpc \
+        apptainer-ohpc \
+        lmod-defaults-gnu12-openmpi4-ohpc \
         moreutils \
         bind-utils \
- 	python3-pexpect
+        python3-pexpect \
+        rsync \
+        acl \
+        jq
 
 pip3 install ansible
 mkdir -p /etc/ansible
@@ -232,7 +241,7 @@ echo "#!/bin/bash" > /tmp/add_users.sh
 cat /etc/passwd | awk -F':' '$4 >= 1001 && $4 < 65000 {print "useradd -M -u", $3, $1}' >> /tmp/add_users.sh
 
 # build instance for compute base image generation, take snapshot, and destroy it
-echo "Creating compute image! based on $centos_base_image"
+echo "Creating compute image!"
 
 ansible-playbook -v --ssh-common-args='-o StrictHostKeyChecking=no' compute_build_base_img.yml
 
