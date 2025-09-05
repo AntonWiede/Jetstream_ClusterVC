@@ -80,6 +80,23 @@ dnf -y --allowerasing install \
         acl \
         jq
 
+# Ensure MUNGE directory and key exist (EL9 may not create /etc/munge until service start)
+mkdir -p /etc/munge
+chown munge:munge /etc/munge
+chmod 0700 /etc/munge
+if [[ ! -f /etc/munge/munge.key ]]; then
+  if command -v create-munge-key >/dev/null 2>&1; then
+    create-munge-key
+  elif [[ -x /usr/sbin/create-munge-key ]]; then
+    /usr/sbin/create-munge-key
+  else
+    echo "ERROR: create-munge-key not found; munge package may be missing" >&2
+    exit 1
+  fi
+fi
+chown munge:munge /etc/munge/munge.key
+chmod 0600 /etc/munge/munge.key
+
 pip3 install ansible
 mkdir -p /etc/ansible
 ln -s /usr/local/bin/ansible-playbook /usr/bin/ansible-playbook

@@ -226,6 +226,14 @@
     script: /tmp/add_users.sh
     ignore_errors: True
 
+  - name: ensure /etc/munge exists on compute nodes
+    file:
+      path: /etc/munge
+      state: directory
+      owner: munge
+      group: munge
+      mode: 0700
+
   - name: copy munge key from headnode
     synchronize:
       mode: push
