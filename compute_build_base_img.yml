@@ -3,7 +3,7 @@
 - hosts: localhost
 
   vars:
-    compute_base_image: "Featured-RockyLinux8"
+    compute_base_image: "Featured-RockyLinux9"
     sec_group_global: "{{ ansible_facts.hostname }}-ssh-global"
     sec_group_internal: "{{ ansible_facts.hostname }}-internal"
     compute_base_size: "m3.tiny"
@@ -61,10 +61,11 @@
       - "telnet"
       - "bind-utils"
       - "vim"
-      - "openmpi4-gnu9-ohpc"
+      - "openmpi4-gnu12-ohpc"
       - "ohpc-slurm-client"
       - "lmod-ohpc"
       - "ceph-common"
+      - "rsync"
     packages_to_remove:
       - "environment-modules"
       - "containerd.io.x86_64"
@@ -93,16 +94,22 @@
       state: stopped
       enabled: no
 
-  - name: Add OpenHPC 2.0 repo
+  - name: Ensure dnf-plugins-core is installed (required for config-manager)
     dnf:
-      name: "http://repos.openhpc.community/OpenHPC/2/CentOS_8/x86_64/ohpc-release-2-1.el8.x86_64.rpm"
+      name: dnf-plugins-core
+      state: present
+      lock_timeout: 300
+
+  - name: Add OpenHPC 3.x repo for Rocky 9
+    dnf:
+      name: "https://repos.openhpc.community/OpenHPC/3/EL_9/x86_64/ohpc-release-3-1.el9.x86_64.rpm"
       state: present
       lock_timeout: 900
       disable_gpg_check: yes
 
 
-  - name: Enable CentOS PowerTools repo
-    command: dnf config-manager --set-enabled powertools
+  - name: Enable CRB repo (Rocky 9)
+    command: dnf config-manager --set-enabled crb
 
   - name: Disable docker-ce repo
     command: dnf config-manager --set-disabled docker-ce-stable
