@@ -254,8 +254,20 @@ if [[ ${jhub_build} == 1 ]]; then
 #  ansible-playbook -v --ssh-common-args='-o StrictHostKeyChecking=no' install_jupyterhub.yml
 fi
 
-#Start required services
-systemctl enable slurmctld munge nfs-server rpcbind 
-systemctl restart munge slurmctld nfs-server rpcbind 
+# Install additional required packages for NFS and check slurm services
+dnf -y install nfs-utils
+
+# Check what slurm services are available and start them
+if systemctl list-unit-files | grep -q slurmctld; then
+    systemctl enable slurmctld munge nfs-server rpcbind
+    systemctl start munge nfs-server rpcbind slurmctld
+elif systemctl list-unit-files | grep -q slurm; then  
+    systemctl enable slurm munge nfs-server rpcbind
+    systemctl start munge nfs-server rpcbind slurm
+else
+    echo "Warning: No slurm controller service found. You may need to start it manually."
+    systemctl enable munge nfs-server rpcbind
+    systemctl start munge nfs-server rpcbind
+fi 
 
 echo -e "If you wish to enable an email when node state is drain or down, please uncomment \nthe cron-node-check.sh job in /etc/crontab, and place your email of choice in the 'email_addr' variable \nat the beginning of /usr/local/sbin/cron-node-check.sh"
