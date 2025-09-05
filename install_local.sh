@@ -47,7 +47,7 @@ firewall-offline-cmd --add-rich-rule="rule source address="${SUBNET}" family='ip
 systemctl enable firewalld
 systemctl restart firewalld
 
-dnf -y install http://repos.openhpc.community/OpenHPC/2/CentOS_8/x86_64/ohpc-release-2-1.el8.x86_64.rpm
+dnf -y install http://repos.openhpc.community/OpenHPC/3/EL_9/x86_64/ohpc-release-3-1.el9.x86_64.rpm
 
 dnf config-manager --set-enabled powertools
 
