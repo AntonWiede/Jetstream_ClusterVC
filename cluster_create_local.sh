@@ -24,7 +24,7 @@ Usage: $0 -o [OPENRC_PATH] -v [VOLUME_SIZE] [-d]"
 OPTIND=1
 
 openrc_path="${HOME}/openrc.sh"
-volume_size="0"
+volume_size="100"
 install_opts=""
 
 while getopts ":jdhhelp:n:o:s:v:" opt; do
