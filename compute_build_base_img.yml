@@ -152,7 +152,7 @@
   - name: fix slurm user uid
     user:
       name: slurm
-      uid: "{{ headnode_slurm_uid.stdout}}"
+      uid: "{{ headnode_slurm_uid.stdout | trim | int }}"
       shell: "/sbin/nologin"
       home: "/etc/slurm"
 
