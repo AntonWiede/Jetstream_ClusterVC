@@ -49,7 +49,7 @@ systemctl restart firewalld
 
 dnf -y install http://repos.openhpc.community/OpenHPC/3/EL_9/x86_64/ohpc-release-3-1.el9.x86_64.rpm
 
-dnf config-manager --set-enabled powertools
+dnf config-manager --set-enabled crb
 
 if [[ ${docker_allow} == 0 ]]; then
   dnf config-manager --set-disabled docker-ce-stable
@@ -59,17 +59,25 @@ fi
 
 dnf -y --allowerasing install \
         ohpc-slurm-server \
+        munge munge-libs \
         vim \
         mailx \
         lmod-ohpc \
         bash-completion \
-        gnu9-compilers-ohpc \
-        openmpi4-gnu9-ohpc \
+        gnu13-compilers-ohpc \
+        openmpi5-gnu13-ohpc \
         singularity-ohpc \
-        lmod-defaults-gnu9-openmpi4-ohpc \
+        lmod-defaults-gnu13-openmpi5-ohpc \
         moreutils \
         bind-utils \
  	python3-pexpect
+
+# Generate munge key if it doesn't exist
+if [ ! -f /etc/munge/munge.key ]; then
+    /usr/sbin/create-munge-key
+    chown munge:munge /etc/munge/munge.key
+    chmod 400 /etc/munge/munge.key
+fi
 
 pip3 install ansible
 mkdir -p /etc/ansible

@@ -210,6 +210,18 @@
     script: /tmp/add_users.sh
     ignore_errors: True
 
+  - name: check if munge key exists on headnode
+    local_action:
+      module: stat
+      path: /etc/munge/munge.key
+    register: munge_key_exists
+    become: False
+
+  - name: fail if munge key doesn't exist on headnode
+    fail:
+      msg: "Munge key /etc/munge/munge.key does not exist on headnode. Please install and configure munge on the headnode first."
+    when: not munge_key_exists.stat.exists
+
   - name: copy munge key from headnode
     synchronize:
       mode: push
