@@ -226,6 +226,15 @@
     script: /tmp/add_users.sh
     ignore_errors: True
 
+  # Ensure required config directories exist before pushing files
+  - name: ensure /etc/slurm exists on compute nodes
+    file:
+      path: /etc/slurm
+      state: directory
+      owner: root
+      group: root
+      mode: 0755
+
   - name: ensure /etc/munge exists on compute nodes
     file:
       path: /etc/munge
