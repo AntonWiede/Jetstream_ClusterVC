@@ -58,13 +58,11 @@
   vars:
     compute_base_package_list:
       - "python3-libselinux"
-      - "telnet"
       - "bind-utils"
       - "vim"
-      - "openmpi4-gnu9-ohpc"
+      - "openmpi5-gnu13-ohpc"
       - "ohpc-slurm-client"
       - "lmod-ohpc"
-      - "ceph-common"
     packages_to_remove:
       - "environment-modules"
       - "containerd.io.x86_64"
