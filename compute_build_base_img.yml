@@ -3,7 +3,7 @@
 - hosts: localhost
 
   vars:
-    compute_base_image: "Featured-RockyLinux8"
+    compute_base_image: "Featured-RockyLinux9"
     sec_group_global: "{{ ansible_facts.hostname }}-ssh-global"
     sec_group_internal: "{{ ansible_facts.hostname }}-internal"
     compute_base_size: "m3.tiny"
@@ -61,8 +61,10 @@
       - "telnet"
       - "bind-utils"
       - "vim"
-      - "openmpi4-gnu9-ohpc"
-      - "ohpc-slurm-client"
+      - "rsync"
+      - "munge"
+      - "openmpi4-gnu12-ohpc"
+      - "slurm-ohpc"
       - "lmod-ohpc"
       - "ceph-common"
     packages_to_remove:
@@ -93,16 +95,22 @@
       state: stopped
       enabled: no
 
-  - name: Add OpenHPC 2.0 repo
+  - name: Ensure dnf-plugins-core is installed (required for config-manager)
     dnf:
-      name: "http://repos.openhpc.community/OpenHPC/2/CentOS_8/x86_64/ohpc-release-2-1.el8.x86_64.rpm"
+      name: dnf-plugins-core
+      state: present
+      lock_timeout: 300
+
+  - name: Add OpenHPC 3.x repo for Rocky 9
+    dnf:
+      name: "https://repos.openhpc.community/OpenHPC/3/EL_9/x86_64/ohpc-release-3-1.el9.x86_64.rpm"
       state: present
       lock_timeout: 900
       disable_gpg_check: yes
 
 
-  - name: Enable CentOS PowerTools repo
-    command: dnf config-manager --set-enabled powertools
+  - name: Enable CRB repo (Rocky 9)
+    command: dnf config-manager --set-enabled crb
 
   - name: Disable docker-ce repo
     command: dnf config-manager --set-disabled docker-ce-stable
@@ -229,28 +237,6 @@
  
   - name: enable slurmd
     service: name=slurmd enabled=yes
-
-#cat /etc/systemd/system/multi-user.target.wants/slurmd.service
-#[Unit]
-#Description=Slurm node daemon
-#After=network.target munge.service #CHANGING TO: network-online.target
-#ConditionPathExists=/etc/slurm/slurm.conf
-#
-#[Service]
-#Type=forking
-#EnvironmentFile=-/etc/sysconfig/slurmd
-#ExecStart=/usr/sbin/slurmd $SLURMD_OPTIONS
-#ExecReload=/bin/kill -HUP $MAINPID
-#PIDFile=/var/run/slurmd.pid
-#KillMode=process
-#LimitNOFILE=51200
-#LimitMEMLOCK=infinity
-#LimitSTACK=infinity
-#Delegate=yes
-#
-#
-#[Install]
-#WantedBy=multi-user.target
 
   - name: change slurmd service "After" to sshd and remote filesystems
     command: sed -i 's/network.target/sshd.service remote-fs.target/' /usr/lib/systemd/system/slurmd.service
