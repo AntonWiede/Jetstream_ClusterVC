@@ -46,7 +46,7 @@ do
     --flavor $node_size \
     --image $node_image \
     --key-name ${OS_SLURM_KEYPAIR} \
-    --user-data <(echo -e "${user_data_long}") \
+    --user_data <(echo -e "${user_data_long}") \
     --security-group ${OS_SSH_SECGROUP_NAME} --security-group ${OS_INTERNAL_SECGROUP_NAME} \
     --nic net-id=${HEADNODE_NETWORK} 2>&1 \
     | tee -a $log_loc | awk '/status/ {print $4}' >> $log_loc 2>&1;
