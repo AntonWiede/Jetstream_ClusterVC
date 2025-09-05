@@ -134,12 +134,21 @@
       state: present
       lock_timeout: 300
 
-  - name: fix slurm user uid
+  - name: remove existing slurm user if it exists
+    user:
+      name: slurm
+      state: absent
+      remove: no
+    ignore_errors: yes
+
+  - name: create slurm user with correct uid
     user:
       name: slurm
       uid: "{{ headnode_slurm_uid.stdout | int }}"
       shell: "/sbin/nologin"
       home: "/etc/slurm"
+      create_home: no
+      system: yes
 
   - name: create slurm spool directories
     file:
