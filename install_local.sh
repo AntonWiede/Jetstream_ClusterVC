@@ -62,7 +62,7 @@ if [[ ${docker_allow} == 0 ]]; then
 fi
 
 dnf -y --allowerasing install \
-        slurm-slurmctld-ohpc \
+        ohpc-slurm-server \
         munge munge-libs \
         vim \
         mailx \

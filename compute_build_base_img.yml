@@ -67,8 +67,8 @@
       - "python3-libselinux"
       - "bind-utils"
       - "vim"
-      - "openmpi5-gnu13-ohpc"
-      - "slurm-ohpc-slurmd"
+      - "openmpi4-gnu13-ohpc"
+      - "ohpc-slurm-client"
       - "lmod-ohpc"
     packages_to_remove:
       - "environment-modules"
