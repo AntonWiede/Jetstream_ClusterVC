@@ -3,6 +3,10 @@
 # Uncomment below to help with debugging
 # set -x
 
+#TODO
+# Munge muss hier noch selber geladen werden mit dnf 
+# und Key muss selbst installiert werden
+
 OPTIND=1
 
 docker_allow=0 #default to NOT installing docker; must be 0 or 1
@@ -58,7 +62,7 @@ if [[ ${docker_allow} == 0 ]]; then
 fi
 
 dnf -y --allowerasing install \
-        ohpc-slurm-server \
+        slurm-slurmctld-ohpc \
         munge munge-libs \
         vim \
         mailx \
