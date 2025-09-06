@@ -131,6 +131,16 @@
   - name: Disable docker-ce repo
     command: dnf config-manager --set-disabled docker-ce-stable
 
+  # NEW: Enable EPEL for MUNGE and other EL9 packages
+  - name: Install EPEL release (Rocky 9)
+    dnf:
+      name: epel-release
+      state: present
+      lock_timeout: 300
+
+  - name: Ensure EPEL repo is enabled
+    command: dnf config-manager --set-enabled epel
+
   - name: remove env-modules and docker packages
     dnf:
       name: "{{ packages_to_remove }}"
