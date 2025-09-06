@@ -187,7 +187,7 @@ if [[ "${volume_size}" != "0" ]]; then
   sudo mkfs.xfs /dev/sdb && sudo mkdir -m 777 /export
   vol_uuid=$(sudo blkid /dev/sdb | sed "s|.*UUID=\"\(.\{36\}\)\" .*|\1|")
   echo "volume uuid is: ${vol_uuid}"
-  echo -e \"UUID=${vol_uuid} /export                 xfs     defaults        0 0\" | sudo tee -a /etc/fstab && sudo mount -a
+  echo "UUID=${vol_uuid} /export                 xfs     defaults        0 0" | sudo tee -a /etc/fstab && sudo mount -a
   echo "Volume sdb has UUID ${vol_uuid}"
   if [[ ${docker_allow} == 1 ]]; then
     echo -E '{ \"data-root\": \"/export/docker\" }' | sudo tee -a /etc/docker/daemon.json && sudo systemctl restart docker
