@@ -87,7 +87,7 @@ pip3 install ansible
 mkdir -p /etc/ansible
 ln -s /usr/local/bin/ansible-playbook /usr/bin/ansible-playbook
 
-pip3 install openstacksdk==0.61.0
+pip3 install openstacksdk
 pip3 install python-openstackclient
 
 dnf -y update  # until the base python2-openstackclient install works out of the box!
