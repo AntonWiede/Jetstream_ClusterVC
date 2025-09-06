@@ -80,6 +80,7 @@
       - "munge"
       - "openmpi4-gnu12-ohpc"
       - "slurm-ohpc"
+      - "slurm-slurmd-ohpc"
       - "lmod-ohpc"
       - "ceph-common"
     packages_to_remove:
