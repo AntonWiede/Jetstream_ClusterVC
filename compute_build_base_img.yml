@@ -68,7 +68,7 @@
       - "bind-utils"
       - "vim"
       - "openmpi5-gnu13-ohpc"
-      - "ohpc-slurm-client"
+      - "slurm-ohpc-slurmd"
       - "lmod-ohpc"
     packages_to_remove:
       - "environment-modules"
